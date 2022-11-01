@@ -135,7 +135,7 @@ class CustomDeviceInfoData with _$CustomDeviceInfoData {
 
 /// Settings of device preview itself (tool bar position, background style).
 @freezed
-abstract class DevicePreviewSettingsData with _$DevicePreviewSettingsData {
+class DevicePreviewSettingsData with _$DevicePreviewSettingsData {
   /// Create a new set of settings.
   const factory DevicePreviewSettingsData({
     /// The toolbar position.

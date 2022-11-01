@@ -43,7 +43,7 @@ class DeviceFrameTheme extends InheritedWidget {
 ///
 /// * [DeviceKeyboardStyle] to customize the virtual on screen keyboard.
 @freezed
-abstract class DeviceFrameStyle with _$DeviceFrameStyle {
+class DeviceFrameStyle with _$DeviceFrameStyle {
   /// Create a [DeviceFrameStyle] with the given [keyboardStyle].
   const factory DeviceFrameStyle({
     required DeviceKeyboardStyle keyboardStyle,
@@ -58,7 +58,7 @@ abstract class DeviceFrameStyle with _$DeviceFrameStyle {
 
 /// The keyboard style allows to customize the virtual onscreen keyboard visuals.
 @freezed
-abstract class DeviceKeyboardStyle with _$DeviceKeyboardStyle {
+class DeviceKeyboardStyle with _$DeviceKeyboardStyle {
   /// Creates a new style for the virtual keyboard.
   const factory DeviceKeyboardStyle({
     required Color backgroundColor,

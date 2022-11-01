@@ -13,7 +13,7 @@ part 'info.freezed.dart';
 
 /// Info about a device and its frame.
 @freezed
-abstract class DeviceInfo with _$DeviceInfo {
+class DeviceInfo with _$DeviceInfo {
   /// Create a new device info.
   const factory DeviceInfo({
     /// Identifier of the device.
