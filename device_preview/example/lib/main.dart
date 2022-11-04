@@ -14,7 +14,9 @@ void main() {
         CustomPlugin(),
       ],
       builder: (context) => const BasicApp(),
-      initialData: const DevicePreviewData(screenScaleFactor: 1.0),
+      initialData: const DevicePreviewData(
+        screenScaleFactor: 1.0,
+      ),
     ),
   );
 }

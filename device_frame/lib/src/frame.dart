@@ -42,8 +42,9 @@ class DeviceFrame extends StatelessWidget {
   /// only the screen is displayed.
   final bool isFrameVisible;
 
-  /// Indicates whether device frame fits to its container
-  final bool fitContainer;
+  /// Sets device frame scale factor. If null, device frame fits to its
+  /// container
+  final double? scaleFactor;
 
   /// Displays the given [screen] into the given [info]
   /// simulated device.
@@ -51,15 +52,15 @@ class DeviceFrame extends StatelessWidget {
   /// The orientation of the device can be updated if the frame supports
   /// it (else it is ignored).
   ///
-  /// If [isFrameVisible] is `true`, only the [screen] is displayed, but clipped with
-  /// the device screen shape.
+  /// If [isFrameVisible] is `true`, only the [screen] is displayed, but
+  /// clipped with the device screen shape.
   const DeviceFrame({
     Key? key,
     required this.device,
     required this.screen,
     this.orientation = Orientation.portrait,
     this.isFrameVisible = true,
-    this.fitContainer = true,
+    this.scaleFactor,
   }) : super(key: key);
 
   /// Creates a [MediaQuery] from the given device [info], and for the current device [orientation].
@@ -131,8 +132,9 @@ class DeviceFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final frameScale =
-        device.screenSize.width / device.screenPath.getBounds().width;
+    final frameScale = (scaleFactor ?? 1.0) *
+        device.screenSize.width /
+        device.screenPath.getBounds().width;
     final frameSize = device.frameSize * frameScale;
     final scaleMatrix = Matrix4.identity()..scale(frameScale);
     final screenPath = device.screenPath.transform(scaleMatrix.storage);
@@ -173,7 +175,7 @@ class DeviceFrame extends StatelessWidget {
       child: stack,
     );
 
-    if (fitContainer) {
+    if (scaleFactor == null) {
       return FittedBox(
         child: rotated,
       );

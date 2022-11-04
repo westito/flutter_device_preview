@@ -434,7 +434,7 @@ class _DevicePreviewState extends State<DevicePreview> {
         device: device,
         isFrameVisible: isFrameVisible,
         orientation: orientation,
-        fitContainer: screenScaleFactor == null,
+        scaleFactor: screenScaleFactor,
         screen: VirtualKeyboard(
           isEnabled: isVirtualKeyboardVisible,
           child: Theme(
@@ -475,17 +475,15 @@ class _DevicePreviewState extends State<DevicePreview> {
     } else {
       return InteractiveViewer(
         scaleEnabled: false,
+        constrained: false,
         boundaryMargin: const EdgeInsets.all(double.infinity),
         child: Center(
-          child: Transform.scale(
-            scale: screenScaleFactor,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onPanStart: (_) {
-                // ignore event to prevent pan inside device frame
-              },
-              child: deviceFrame,
-            ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onPanStart: (_) {
+              // ignore event to prevent pan inside device frame
+            },
+            child: deviceFrame,
           ),
         ),
       );
