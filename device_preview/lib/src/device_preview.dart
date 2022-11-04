@@ -352,6 +352,7 @@ class DevicePreview extends StatefulWidget {
 
 class _DevicePreviewState extends State<DevicePreview> {
   bool _isToolPanelPopOverOpen = false;
+  TransformationController? _transformationController;
 
   late DevicePreviewStorage storage =
       widget.storage ?? DevicePreviewStorage.preferences();
@@ -398,7 +399,7 @@ class _DevicePreviewState extends State<DevicePreview> {
     }
   }
 
-  Widget _buildPreview(BuildContext context) {
+  Widget _buildPreview(BuildContext context, BoxConstraints constraints) {
     final theme = Theme.of(context);
     final isEnabled = context.select(
       (DevicePreviewStore store) => store.state.maybeMap(
@@ -428,37 +429,39 @@ class _DevicePreviewState extends State<DevicePreview> {
     final screenScaleFactor = context
         .select((DevicePreviewStore store) => store.data.screenScaleFactor);
 
-    final deviceFrame = RepaintBoundary(
-      key: _repaintKey,
-      child: DeviceFrame(
-        device: device,
-        isFrameVisible: isFrameVisible,
-        orientation: orientation,
-        scaleFactor: screenScaleFactor,
-        screen: VirtualKeyboard(
-          isEnabled: isVirtualKeyboardVisible,
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              platform: device.identifier.platform,
-              brightness: isDarkMode ? Brightness.dark : Brightness.light,
-            ),
-            child: MediaQuery(
-              data: DevicePreview._mediaQuery(context),
-              child: Builder(
-                key: _appKey,
-                builder: (context) {
-                  final app = widget.builder(context);
-                  assert(
-                    isWidgetsAppUsingInheritedMediaQuery(app),
-                    'Your widgets app should have its `useInheritedMediaQuery` property set to `true` in order to use DevicePreview.',
-                  );
-                  return app;
-                },
-              ),
+    final deviceFrame = DeviceFrame(
+      device: device,
+      isFrameVisible: isFrameVisible,
+      orientation: orientation,
+      scaleFactor: screenScaleFactor,
+      screen: VirtualKeyboard(
+        isEnabled: isVirtualKeyboardVisible,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            platform: device.identifier.platform,
+            brightness: isDarkMode ? Brightness.dark : Brightness.light,
+          ),
+          child: MediaQuery(
+            data: DevicePreview._mediaQuery(context),
+            child: Builder(
+              key: _appKey,
+              builder: (context) {
+                final app = widget.builder(context);
+                assert(
+                  isWidgetsAppUsingInheritedMediaQuery(app),
+                  'Your widgets app should have its `useInheritedMediaQuery` property set to `true` in order to use DevicePreview.',
+                );
+                return app;
+              },
             ),
           ),
         ),
       ),
+    );
+
+    final deviceFrameContainer = RepaintBoundary(
+      key: _repaintKey,
+      child: deviceFrame,
     );
 
     if (screenScaleFactor == null) {
@@ -470,21 +473,33 @@ class _DevicePreviewState extends State<DevicePreview> {
           left: 20 + mediaQuery.viewPadding.left,
           bottom: 20,
         ),
-        child: deviceFrame,
+        child: deviceFrameContainer,
       );
     } else {
+      final frameSize = deviceFrame.actualSize;
+      _transformationController ??= TransformationController(
+        Matrix4.identity()
+          ..leftTranslate(
+            frameSize.width < constraints.maxWidth
+                ? constraints.maxWidth / 2 - frameSize.width / 2
+                : 20 + mediaQuery.viewPadding.left,
+            frameSize.height < constraints.maxHeight
+                ? constraints.maxHeight / 2 - frameSize.height / 2
+                : 20 + mediaQuery.viewPadding.top,
+          ),
+      );
+
       return InteractiveViewer(
         scaleEnabled: false,
         constrained: false,
         boundaryMargin: const EdgeInsets.all(double.infinity),
-        child: Center(
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onPanStart: (_) {
-              // ignore event to prevent pan inside device frame
-            },
-            child: deviceFrame,
-          ),
+        transformationController: _transformationController,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onPanStart: (_) {
+            // ignore event to prevent pan inside device frame
+          },
+          child: deviceFrameContainer,
         ),
       );
     }
@@ -621,7 +636,7 @@ class _DevicePreviewState extends State<DevicePreview> {
                               child: ClipRRect(
                                 borderRadius: borderRadius,
                                 child: isEnabled
-                                    ? Builder(
+                                    ? LayoutBuilder(
                                         builder: _buildPreview,
                                       )
                                     : Builder(

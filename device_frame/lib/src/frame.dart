@@ -46,6 +46,13 @@ class DeviceFrame extends StatelessWidget {
   /// container
   final double? scaleFactor;
 
+  Size get actualSize =>
+      device.isLandscape(orientation) ? _frameSize.flipped : _frameSize;
+
+  final Size _frameSize;
+  final Path _screenPath;
+  final double _actualScale;
+
   /// Displays the given [screen] into the given [info]
   /// simulated device.
   ///
@@ -54,14 +61,45 @@ class DeviceFrame extends StatelessWidget {
   ///
   /// If [isFrameVisible] is `true`, only the [screen] is displayed, but
   /// clipped with the device screen shape.
-  const DeviceFrame({
+  const DeviceFrame._(
     Key? key,
-    required this.device,
-    required this.screen,
-    this.orientation = Orientation.portrait,
-    this.isFrameVisible = true,
+    this.device,
+    this.screen,
+    this.orientation,
+    this.isFrameVisible,
     this.scaleFactor,
-  }) : super(key: key);
+    this._frameSize,
+    this._screenPath,
+    this._actualScale,
+  ) : super(key: key);
+
+  factory DeviceFrame({
+    Key? key,
+    required DeviceInfo device,
+    required Widget screen,
+    Orientation orientation = Orientation.portrait,
+    bool isFrameVisible = true,
+    double? scaleFactor,
+  }) {
+    final actualScale = (scaleFactor ?? 1.0) *
+        device.screenSize.width /
+        device.screenPath.getBounds().width;
+    final frameSize = device.frameSize * actualScale;
+    final scaleMatrix = Matrix4.identity()..scale(actualScale);
+    final screenPath = device.screenPath.transform(scaleMatrix.storage);
+
+    return DeviceFrame._(
+      key,
+      device,
+      screen,
+      orientation,
+      isFrameVisible,
+      scaleFactor,
+      frameSize,
+      screenPath,
+      actualScale,
+    );
+  }
 
   /// Creates a [MediaQuery] from the given device [info], and for the current device [orientation].
   ///
@@ -132,22 +170,16 @@ class DeviceFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final frameScale = (scaleFactor ?? 1.0) *
-        device.screenSize.width /
-        device.screenPath.getBounds().width;
-    final frameSize = device.frameSize * frameScale;
-    final scaleMatrix = Matrix4.identity()..scale(frameScale);
-    final screenPath = device.screenPath.transform(scaleMatrix.storage);
-    final bounds = screenPath.getBounds();
+    final screenRect = _screenPath.getBounds();
     final stack = SizedBox(
-      width: isFrameVisible ? frameSize.width : bounds.width,
-      height: isFrameVisible ? frameSize.height : bounds.height,
+      width: _frameSize.width,
+      height: _frameSize.height,
       child: Stack(
         children: [
           if (isFrameVisible)
             Transform.scale(
               key: const Key('frame'),
-              scale: frameScale,
+              scale: _actualScale,
               alignment: Alignment.topLeft,
               child: CustomPaint(
                 key: ValueKey(device.identifier),
@@ -156,12 +188,12 @@ class DeviceFrame extends StatelessWidget {
             ),
           Positioned(
             key: const Key('Screen'),
-            left: isFrameVisible ? bounds.left : 0,
-            top: isFrameVisible ? bounds.top : 0,
-            width: bounds.width,
-            height: bounds.height,
+            left: isFrameVisible ? screenRect.left : 0,
+            top: isFrameVisible ? screenRect.top : 0,
+            width: screenRect.width,
+            height: screenRect.height,
             child: ClipPath(
-              clipper: _ScreenClipper(screenPath),
+              clipper: _ScreenClipper(_screenPath),
               child: _screen(context, device),
             ),
           ),
