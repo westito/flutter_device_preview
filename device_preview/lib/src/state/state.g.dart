@@ -14,13 +14,14 @@ _$_DevicePreviewData _$$_DevicePreviewDataFromJson(Map<String, dynamic> json) =>
           $enumDecodeNullable(_$OrientationEnumMap, json['orientation']) ??
               Orientation.portrait,
       deviceIdentifier: json['deviceIdentifier'] as String?,
-      locale: json['locale'] as String? ?? 'en-US',
+      locale: json['locale'] as String? ?? '',
       isFrameVisible: json['isFrameVisible'] as bool? ?? true,
       isDarkMode: json['isDarkMode'] as bool? ?? false,
       boldText: json['boldText'] as bool? ?? false,
       isVirtualKeyboardVisible:
           json['isVirtualKeyboardVisible'] as bool? ?? false,
-      zoomLevel: json['zoomLevel'] as int? ?? null,
+      screenScaleFactor:
+          (json['screenScaleFactor'] as num?)?.toDouble() ?? null,
       disableAnimations: json['disableAnimations'] as bool? ?? false,
       highContrast: json['highContrast'] as bool? ?? false,
       accessibleNavigation: json['accessibleNavigation'] as bool? ?? false,
@@ -52,7 +53,7 @@ Map<String, dynamic> _$$_DevicePreviewDataToJson(
       'isDarkMode': instance.isDarkMode,
       'boldText': instance.boldText,
       'isVirtualKeyboardVisible': instance.isVirtualKeyboardVisible,
-      'zoomLevel': instance.zoomLevel,
+      'screenScaleFactor': instance.screenScaleFactor,
       'disableAnimations': instance.disableAnimations,
       'highContrast': instance.highContrast,
       'accessibleNavigation': instance.accessibleNavigation,

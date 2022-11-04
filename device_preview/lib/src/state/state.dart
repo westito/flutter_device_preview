@@ -52,7 +52,7 @@ class DevicePreviewData with _$DevicePreviewData {
     String? deviceIdentifier,
 
     /// The currently selected device locale.
-    @Default('en-US') String locale,
+    @Default('') String locale,
 
     /// Indicate whether the frame is currently visible.
     @Default(true) bool isFrameVisible,
@@ -66,8 +66,8 @@ class DevicePreviewData with _$DevicePreviewData {
     /// Indicate whether the virtual keyboard is visible.
     @Default(false) bool isVirtualKeyboardVisible,
 
-    /// Current zoom level
-    @Default(null) int? zoomLevel,
+    /// Current device screen scale factor
+    @Default(null) double? screenScaleFactor,
 
     /// Indicate whether animations are disabled.
     @Default(false) bool disableAnimations,

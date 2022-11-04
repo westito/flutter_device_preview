@@ -9,11 +9,12 @@ void main() {
   runApp(
     DevicePreview(
       enabled: true,
-      tools: [
+      tools: const [
         ...DevicePreview.defaultTools,
-        const CustomPlugin(),
+        CustomPlugin(),
       ],
       builder: (context) => const BasicApp(),
+      initialData: const DevicePreviewData(screenScaleFactor: 1.0),
     ),
   );
 }

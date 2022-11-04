@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:ui';
 
-import 'package:device_frame/device_frame.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../device_preview.dart';
 import '../../device_preview.dart' as device_preview;
-import '../storage/storage.dart';
 import 'custom_device.dart';
-import 'state.dart';
 
 /// The store is a container for the current [state] of the device preview.
 ///
@@ -17,6 +12,7 @@ import 'state.dart';
 class DevicePreviewStore extends ChangeNotifier {
   /// Create a new store with the given [locales], [device] and [storage].
   DevicePreviewStore({
+    required this.initialData,
     required this.defaultDevice,
     List<Locale>? locales,
     List<DeviceInfo>? devices,
@@ -27,6 +23,8 @@ class DevicePreviewStore extends ChangeNotifier {
       devices: devices,
     );
   }
+
+  final DevicePreviewData initialData;
 
   final DeviceInfo defaultDevice;
 
@@ -95,16 +93,20 @@ class DevicePreviewStore extends ChangeNotifier {
           print('[device_preview] Error while restoring data: $e');
         }
 
-        data ??= DevicePreviewData(
-          locale: defaultLocale,
-          customDevice: _defaultCustomDevice,
-        );
+        data ??= initialData;
+
+        if (data.locale.isEmpty) {
+          data = data.copyWith(
+            locale: defaultLocale,
+          );
+        }
 
         if (data.customDevice == null) {
           data = data.copyWith(
             customDevice: _defaultCustomDevice,
           );
         }
+
         state = DevicePreviewState.initialized(
           locales: availaiableLocales.cast<NamedLocale>(),
           devices: devices!,
@@ -220,7 +222,8 @@ extension DevicePreviewStateHelperExtensions on DevicePreviewStore {
 
   /// Disable or enable
   void toggleZoomLevel() {
-    data = data.copyWith(zoomLevel: data.zoomLevel == null ? 100 : null);
+    data = data.copyWith(
+        screenScaleFactor: data.screenScaleFactor == null ? 1.0 : null);
   }
 
   /// Switch from light to dark mode.

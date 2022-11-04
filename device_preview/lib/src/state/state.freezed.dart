@@ -610,8 +610,8 @@ mixin _$DevicePreviewData {
   /// Indicate whether the virtual keyboard is visible.
   bool get isVirtualKeyboardVisible => throw _privateConstructorUsedError;
 
-  /// Current zoom level
-  int? get zoomLevel => throw _privateConstructorUsedError;
+  /// Current device screen scale factor
+  double? get screenScaleFactor => throw _privateConstructorUsedError;
 
   /// Indicate whether animations are disabled.
   bool get disableAnimations => throw _privateConstructorUsedError;
@@ -658,7 +658,7 @@ abstract class $DevicePreviewDataCopyWith<$Res> {
       bool isDarkMode,
       bool boldText,
       bool isVirtualKeyboardVisible,
-      int? zoomLevel,
+      double? screenScaleFactor,
       bool disableAnimations,
       bool highContrast,
       bool accessibleNavigation,
@@ -694,7 +694,7 @@ class _$DevicePreviewDataCopyWithImpl<$Res, $Val extends DevicePreviewData>
     Object? isDarkMode = null,
     Object? boldText = null,
     Object? isVirtualKeyboardVisible = null,
-    Object? zoomLevel = freezed,
+    Object? screenScaleFactor = freezed,
     Object? disableAnimations = null,
     Object? highContrast = null,
     Object? accessibleNavigation = null,
@@ -741,10 +741,10 @@ class _$DevicePreviewDataCopyWithImpl<$Res, $Val extends DevicePreviewData>
           ? _value.isVirtualKeyboardVisible
           : isVirtualKeyboardVisible // ignore: cast_nullable_to_non_nullable
               as bool,
-      zoomLevel: freezed == zoomLevel
-          ? _value.zoomLevel
-          : zoomLevel // ignore: cast_nullable_to_non_nullable
-              as int?,
+      screenScaleFactor: freezed == screenScaleFactor
+          ? _value.screenScaleFactor
+          : screenScaleFactor // ignore: cast_nullable_to_non_nullable
+              as double?,
       disableAnimations: null == disableAnimations
           ? _value.disableAnimations
           : disableAnimations // ignore: cast_nullable_to_non_nullable
@@ -823,7 +823,7 @@ abstract class _$$_DevicePreviewDataCopyWith<$Res>
       bool isDarkMode,
       bool boldText,
       bool isVirtualKeyboardVisible,
-      int? zoomLevel,
+      double? screenScaleFactor,
       bool disableAnimations,
       bool highContrast,
       bool accessibleNavigation,
@@ -859,7 +859,7 @@ class __$$_DevicePreviewDataCopyWithImpl<$Res>
     Object? isDarkMode = null,
     Object? boldText = null,
     Object? isVirtualKeyboardVisible = null,
-    Object? zoomLevel = freezed,
+    Object? screenScaleFactor = freezed,
     Object? disableAnimations = null,
     Object? highContrast = null,
     Object? accessibleNavigation = null,
@@ -906,10 +906,10 @@ class __$$_DevicePreviewDataCopyWithImpl<$Res>
           ? _value.isVirtualKeyboardVisible
           : isVirtualKeyboardVisible // ignore: cast_nullable_to_non_nullable
               as bool,
-      zoomLevel: freezed == zoomLevel
-          ? _value.zoomLevel
-          : zoomLevel // ignore: cast_nullable_to_non_nullable
-              as int?,
+      screenScaleFactor: freezed == screenScaleFactor
+          ? _value.screenScaleFactor
+          : screenScaleFactor // ignore: cast_nullable_to_non_nullable
+              as double?,
       disableAnimations: null == disableAnimations
           ? _value.disableAnimations
           : disableAnimations // ignore: cast_nullable_to_non_nullable
@@ -956,12 +956,12 @@ class _$_DevicePreviewData
       this.isEnabled = true,
       this.orientation = Orientation.portrait,
       this.deviceIdentifier,
-      this.locale = 'en-US',
+      this.locale = '',
       this.isFrameVisible = true,
       this.isDarkMode = false,
       this.boldText = false,
       this.isVirtualKeyboardVisible = false,
-      this.zoomLevel = null,
+      this.screenScaleFactor = null,
       this.disableAnimations = false,
       this.highContrast = false,
       this.accessibleNavigation = false,
@@ -1020,10 +1020,10 @@ class _$_DevicePreviewData
   @JsonKey()
   final bool isVirtualKeyboardVisible;
 
-  /// Current zoom level
+  /// Current device screen scale factor
   @override
   @JsonKey()
-  final int? zoomLevel;
+  final double? screenScaleFactor;
 
   /// Indicate whether animations are disabled.
   @override
@@ -1070,7 +1070,7 @@ class _$_DevicePreviewData
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'DevicePreviewData(isToolbarVisible: $isToolbarVisible, isEnabled: $isEnabled, orientation: $orientation, deviceIdentifier: $deviceIdentifier, locale: $locale, isFrameVisible: $isFrameVisible, isDarkMode: $isDarkMode, boldText: $boldText, isVirtualKeyboardVisible: $isVirtualKeyboardVisible, zoomLevel: $zoomLevel, disableAnimations: $disableAnimations, highContrast: $highContrast, accessibleNavigation: $accessibleNavigation, invertColors: $invertColors, pluginData: $pluginData, textScaleFactor: $textScaleFactor, settings: $settings, customDevice: $customDevice)';
+    return 'DevicePreviewData(isToolbarVisible: $isToolbarVisible, isEnabled: $isEnabled, orientation: $orientation, deviceIdentifier: $deviceIdentifier, locale: $locale, isFrameVisible: $isFrameVisible, isDarkMode: $isDarkMode, boldText: $boldText, isVirtualKeyboardVisible: $isVirtualKeyboardVisible, screenScaleFactor: $screenScaleFactor, disableAnimations: $disableAnimations, highContrast: $highContrast, accessibleNavigation: $accessibleNavigation, invertColors: $invertColors, pluginData: $pluginData, textScaleFactor: $textScaleFactor, settings: $settings, customDevice: $customDevice)';
   }
 
   @override
@@ -1088,7 +1088,7 @@ class _$_DevicePreviewData
       ..add(DiagnosticsProperty('boldText', boldText))
       ..add(DiagnosticsProperty(
           'isVirtualKeyboardVisible', isVirtualKeyboardVisible))
-      ..add(DiagnosticsProperty('zoomLevel', zoomLevel))
+      ..add(DiagnosticsProperty('screenScaleFactor', screenScaleFactor))
       ..add(DiagnosticsProperty('disableAnimations', disableAnimations))
       ..add(DiagnosticsProperty('highContrast', highContrast))
       ..add(DiagnosticsProperty('accessibleNavigation', accessibleNavigation))
@@ -1122,8 +1122,8 @@ class _$_DevicePreviewData
             (identical(
                     other.isVirtualKeyboardVisible, isVirtualKeyboardVisible) ||
                 other.isVirtualKeyboardVisible == isVirtualKeyboardVisible) &&
-            (identical(other.zoomLevel, zoomLevel) ||
-                other.zoomLevel == zoomLevel) &&
+            (identical(other.screenScaleFactor, screenScaleFactor) ||
+                other.screenScaleFactor == screenScaleFactor) &&
             (identical(other.disableAnimations, disableAnimations) ||
                 other.disableAnimations == disableAnimations) &&
             (identical(other.highContrast, highContrast) ||
@@ -1155,7 +1155,7 @@ class _$_DevicePreviewData
       isDarkMode,
       boldText,
       isVirtualKeyboardVisible,
-      zoomLevel,
+      screenScaleFactor,
       disableAnimations,
       highContrast,
       accessibleNavigation,
@@ -1191,7 +1191,7 @@ abstract class _DevicePreviewData implements DevicePreviewData {
       final bool isDarkMode,
       final bool boldText,
       final bool isVirtualKeyboardVisible,
-      final int? zoomLevel,
+      final double? screenScaleFactor,
       final bool disableAnimations,
       final bool highContrast,
       final bool accessibleNavigation,
@@ -1242,8 +1242,8 @@ abstract class _DevicePreviewData implements DevicePreviewData {
   bool get isVirtualKeyboardVisible;
   @override
 
-  /// Current zoom level
-  int? get zoomLevel;
+  /// Current device screen scale factor
+  double? get screenScaleFactor;
   @override
 
   /// Indicate whether animations are disabled.

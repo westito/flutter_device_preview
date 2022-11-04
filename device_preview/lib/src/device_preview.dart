@@ -15,7 +15,6 @@ import 'package:device_preview/src/views/tool_panel/sections/system.dart';
 import 'package:device_preview/src/views/tool_panel/tool_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -61,6 +60,7 @@ class DevicePreview extends StatefulWidget {
     this.storage,
     this.enabled = true,
     this.backgroundColor,
+    this.initialData = const DevicePreviewData(),
   }) : super(key: key);
 
   /// If not [enabled], the [child] is used directly.
@@ -87,6 +87,9 @@ class DevicePreview extends StatefulWidget {
 
   /// The available devices used for previewing.
   final List<DeviceInfo>? devices;
+
+  /// Initial state of settings
+  final DevicePreviewData initialData;
 
   /// The list of available tools.
   ///
@@ -422,9 +425,8 @@ class _DevicePreviewState extends State<DevicePreview> {
     final isDarkMode = context.select(
       (DevicePreviewStore store) => store.data.isDarkMode,
     );
-    final zoomLevel = context.select(
-      (DevicePreviewStore store) => store.data.zoomLevel,
-    );
+    final screenScaleFactor = context
+        .select((DevicePreviewStore store) => store.data.screenScaleFactor);
 
     final deviceFrame = RepaintBoundary(
       key: _repaintKey,
@@ -432,7 +434,7 @@ class _DevicePreviewState extends State<DevicePreview> {
         device: device,
         isFrameVisible: isFrameVisible,
         orientation: orientation,
-        fitContainer: zoomLevel == null,
+        fitContainer: screenScaleFactor == null,
         screen: VirtualKeyboard(
           isEnabled: isVirtualKeyboardVisible,
           child: Theme(
@@ -459,7 +461,7 @@ class _DevicePreviewState extends State<DevicePreview> {
       ),
     );
 
-    if (zoomLevel == null) {
+    if (screenScaleFactor == null) {
       return Container(
         color: widget.backgroundColor ?? theme.canvasColor,
         padding: EdgeInsets.only(
@@ -476,7 +478,7 @@ class _DevicePreviewState extends State<DevicePreview> {
         boundaryMargin: const EdgeInsets.all(double.infinity),
         child: Center(
           child: Transform.scale(
-            scale: zoomLevel / 100,
+            scale: screenScaleFactor,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onPanStart: (_) {
@@ -501,6 +503,7 @@ class _DevicePreviewState extends State<DevicePreview> {
 
     return ChangeNotifierProvider(
       create: (context) => DevicePreviewStore(
+        initialData: widget.initialData,
         defaultDevice: widget.defaultDevice ?? Devices.ios.iPhone13,
         devices: widget.devices,
         locales: widget.availableLocales,

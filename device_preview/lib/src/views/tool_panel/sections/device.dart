@@ -63,11 +63,10 @@ class DeviceSection extends StatelessWidget {
       (DevicePreviewStore store) => store.data.isFrameVisible,
     );
 
-    final zoomLevel = context.select(
-      (DevicePreviewStore store) => store.data.zoomLevel,
-    );
+    final screenScaleFactor = context
+        .select((DevicePreviewStore store) => store.data.screenScaleFactor);
 
-    final zoomEnabled = zoomLevel != null;
+    final zoomEnabled = screenScaleFactor != null;
 
     return ToolPanelSection(
       title: 'Device',
@@ -172,7 +171,9 @@ class DeviceSection extends StatelessWidget {
           ListTile(
             key: const Key('zoom'),
             title: const Text('Zoom level'),
-            subtitle: Text(zoomEnabled ? '$zoomLevel%' : 'Fit screen'),
+            subtitle: Text(
+              zoomEnabled ? '${screenScaleFactor! * 100}%' : 'Fit screen',
+            ),
             trailing: Opacity(
               opacity: zoomEnabled ? 0.3 : 1.0,
               child: const Icon(Icons.fit_screen_outlined),
@@ -185,11 +186,12 @@ class DeviceSection extends StatelessWidget {
           ListTile(
             key: const Key('zoom-level-slider'),
             title: Slider(
-              value: zoomLevel?.toDouble() ?? 100,
+              value: (screenScaleFactor ?? 1.0) * 100,
               onChanged: zoomEnabled
                   ? (v) {
                       final state = context.read<DevicePreviewStore>();
-                      state.data = state.data.copyWith(zoomLevel: v.toInt());
+                      state.data = state.data
+                          .copyWith(screenScaleFactor: v.toInt() / 100);
                     }
                   : null,
               min: 25,
