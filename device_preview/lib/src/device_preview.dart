@@ -531,9 +531,8 @@ class _DevicePreviewState extends State<DevicePreview> {
         );
 
         if (!isInitialized) {
-          return Builder(
-            key: _appKey,
-            builder: widget.builder,
+          return const MaterialApp(
+            home: Scaffold(),
           );
         }
 

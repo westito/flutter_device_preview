@@ -194,7 +194,9 @@ class DeviceFrame extends StatelessWidget {
             height: screenRect.height,
             child: ClipPath(
               clipper: _ScreenClipper(_screenPath),
-              child: _screen(context, device),
+              child: FittedBox(
+                child: _screen(context, device),
+              ),
             ),
           ),
         ],
